@@ -24,19 +24,18 @@ enum SortType {
 export const App: React.FC = () => {
   const [sortBy, setSortBy] = useState(SortType.NONE);
   const [isReversed, setIsReversed] = useState(false);
-  let visibleGoods = [...goodsFromServer];
+  const sortedGoods = [...goodsFromServer].sort((a, b) => {
+    switch (sortBy) {
+      case SortType.ALPHABET:
+        return a.localeCompare(b);
+      case SortType.LENGTH:
+        return a.length - b.length;
+      default:
+        return 0;
+    }
+  });
 
-  if (sortBy === SortType.ALPHABET) {
-    visibleGoods = visibleGoods.sort((a, b) => a.localeCompare(b));
-  }
-
-  if (sortBy === SortType.LENGTH) {
-    visibleGoods = visibleGoods.sort((a, b) => a.length - b.length);
-  }
-
-  if (isReversed) {
-    visibleGoods.reverse();
-  }
+  const visibleGoods = isReversed ? [...sortedGoods].reverse() : sortedGoods;
 
   return (
     <div className="section content">
